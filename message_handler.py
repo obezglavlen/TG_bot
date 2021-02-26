@@ -1,5 +1,7 @@
-from config import __BOT__
+from config import _bot
 from random import random as rand
+from pprint import pprint
+from config import _days
 
 
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
@@ -9,7 +11,7 @@ def reply_with_sticker(message, sticker_id: str = None):
     :param message: message object from bot
     :param sticker_id: sticker id to send
     """
-    __BOT__.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
+    _bot.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
 
 
 # Решил уже и тут сделать отдельную функцию, ибо чтобы было в едином стиле
@@ -19,11 +21,11 @@ def reply_with_text(message, text: str):
     :param message: message object from bot
     :param text: text to answer
     """
-    __BOT__.reply_to(message, text)
+    _bot.reply_to(message, text)
 
 
 # Вывод сообщения при получении команды "/start" или "/help"
-@__BOT__.message_handler(commands=['start', 'help'], func=lambda message: True)
+@_bot.message_handler(commands=['start', 'help'], func=lambda message: True)
 def send_welcome(message):
     """
     Answer welcome message to user, if it wrote '/start' or '/help'
@@ -32,8 +34,57 @@ def send_welcome(message):
     reply_with_text(message, "Howdy, how are you doing?")
 
 
+@_bot.message_handler(commands=['dev'])
+def message_log(message):
+    pprint(message.__dict__)
+
+
+@_bot.message_handler(commands=['bot'])
+def doebka(message):
+    """
+    Here's command with parameters.
+    ex.:
+        /bot -расписание -числитель -сегодня
+        /bot -неделя
+        /bot -диск
+
+    -расписание: получить расписание (хз пока как)
+        -сегодня: получить расписание на сегодня
+        -<день недели>: получить расписание на заданный день
+
+        -числитель: получить расписание на всю неделю по числителю
+        -знаменатель: получить расписание на всю неделю по знаменателю
+            -сегодня: получить расписание на сегодня по числителю
+            -<день недели> получить расписание на день по числителю
+
+    -диск: получить ссылку на гуглДиск/мегаДиск
+
+    :param message: message from bot
+    """
+    if len(message.text.split()) > 1:
+        parameters = message.text.split()[1:]
+
+        # Здесь нужно сделать с помощью ексепшена
+        if len(parameters) > 3:
+            reply_with_text(message, f'Too many parameters, expected 3, received {len(parameters)}')
+        print(parameters)
+        for parameter in parameters:
+            if parameter == '-расписание':
+                if parameters.index(parameter) == 0:
+                    if len(parameters) == 2:
+                        if parameters[1] == '-сегодня':
+                            # Тут надо будет както обрабатываеть time()
+                            reply_with_text(message, 'Держи свое ебаное расписание на сегодня')
+                        print(set(parameters[1]))
+                        # if set(parameters[1]) == (set(parameters) & set(_days)):
+                            # чета тут придумать надо, ибо помойму оно работет
+                            # не так как должно
+                            # reply_with_text(message, f'Держи расписание на {parameters[1]}')
+    else:
+        reply_with_text(message, 'This command need parameters')
+
 # Если приходит стикер - ответить стикером в ответ
-@__BOT__.message_handler(func=lambda message: True, content_types=['sticker'])
+@_bot.message_handler(func=lambda message: True, content_types=['sticker'])
 def sticker_reply(message):
     """
     If user send a sticker, bot reply on this message with a
@@ -64,4 +115,4 @@ def start_handing():
     """
     Loop bot for stay alive
     """
-    __BOT__.polling()
+    _bot.polling()
