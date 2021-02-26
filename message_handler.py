@@ -9,7 +9,7 @@ def reply_with_sticker(message, sticker_id: str = None):
     :param message: message object from bot
     :param sticker_id: sticker id to send
     """
-    return __BOT__.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
+    __BOT__.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
 
 
 # Решил уже и тут сделать отдельную функцию, ибо чтобы было в едином стиле
@@ -19,7 +19,7 @@ def reply_with_text(message, text: str):
     :param message: message object from bot
     :param text: text to answer
     """
-    return __BOT__.reply_to(message, text)
+    __BOT__.reply_to(message, text)
 
 
 # Вывод сообщения при получении команды "/start" или "/help"
