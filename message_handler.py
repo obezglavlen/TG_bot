@@ -4,23 +4,44 @@ from random import random as rand
 
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
 def reply_with_sticker(message, sticker_id: str = None):
+    """
+    Overwrite method to reply on message with sticker
+    :param message: message object from bot
+    :param sticker_id: sticker id to send
+    """
     return __BOT__.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
 
 
 # Решил уже и тут сделать отдельную функцию, ибо чтобы было в едином стиле
 def reply_with_text(message, text: str):
+    """
+    Overwrite method to reply on message with text
+    :param message: message object from bot
+    :param text: text to answer
+    """
     return __BOT__.reply_to(message, text)
 
 
 # Вывод сообщения при получении команды "/start" или "/help"
 @__BOT__.message_handler(commands=['start', 'help'], func=lambda message: True)
 def send_welcome(message):
+    """
+    Answer welcome message to user, if it wrote '/start' or '/help'
+    :param message: message object from bot
+    """
     reply_with_text(message, "Howdy, how are you doing?")
 
 
 # Если приходит стикер - ответить стикером в ответ
 @__BOT__.message_handler(func=lambda message: True, content_types=['sticker'])
 def sticker_reply(message):
+    """
+    If user send a sticker, bot reply on this message with a
+    random sticker.
+    To get another sticker from api you need to get log:
+        print(message['sticker']['file_id'])
+    :param message: message object from bot
+    """
     n = round(rand() * 4)
     if n == 0:
         # Иди нахуй
@@ -40,4 +61,7 @@ def sticker_reply(message):
 
 
 def start_handing():
+    """
+    Loop bot for stay alive
+    """
     __BOT__.polling()
