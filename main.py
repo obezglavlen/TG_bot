@@ -1,4 +1,4 @@
-from message_handler import start_handing
+from message_handler import start_handing as start
 
 
-start_handing()
+start()
