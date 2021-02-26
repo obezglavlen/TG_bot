@@ -6,11 +6,6 @@ TOKEN = '1118590522:AAFIXZ2RbT5KQAaoRsXaM1dmkxboFm2E2JA'
 # Объект бота
 BOT = telebot.TeleBot(TOKEN)
 
-# IS_NUMERATOR: bool = input("Is Numerator?")
-IS_NUMERATOR = True
-
-DAYS = [r'пн', r'вт', r'ср', r'чт', r'пт']
-
 STICKERS = {
     'go_fuck_urslf':
         'CAACAgIAAxkBAAIgSWA3-6kDhEPXc76-aetU7AWmF-yLAAKPAAOMgEUSfLi37KtGpWgeBA',

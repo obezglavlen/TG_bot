@@ -36,34 +36,6 @@ def send_welcome(message):
     reply_with_text(message, "Howdy, how are you doing?")
 
 
-@BOT.message_handler(commands=['dev'])
-def message_log(message):
-    pprint(message.__dict__)
-
-
-@BOT.inline_handler(lambda query: query.query == 'text')
-def query_text(inline_query):
-    """
-    On dev.
-    Inline query handler.
-    On typing @<bot_username> highlight tip above the line edit
-    :param inline_query:
-    :return:
-    """
-    try:
-        r = types.InlineQueryResultArticle('1', 'Result',
-                                           types.InputTextMessageContent(
-                                               'Result message.'),
-                                           description='4Venom')
-        r2 = types.InlineQueryResultArticle('2', 'Result2',
-                                            types.InputTextMessageContent(
-                                                'Result message2.'),
-                                            description='polbu')
-        BOT.answer_inline_query(inline_query.id, [r, r2])
-    except Exception as e:
-        print(e)
-
-
 # Если приходит стикер - ответить стикером в ответ
 @BOT.message_handler(func=lambda message: True, content_types=['sticker'])
 def sticker_reply(message):
