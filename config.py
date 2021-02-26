@@ -1,12 +1,12 @@
 import telebot
 
 # Токен API, получается у BotFather
-TOKEN = '1118590522:AAFIXZ2RbT5KQAaoRsXaM1dmkxboFm2E2JA'
+TOKEN: str = '1118590522:AAFIXZ2RbT5KQAaoRsXaM1dmkxboFm2E2JA'
 
 # Объект бота
-BOT = telebot.TeleBot(TOKEN)
+BOT: object = telebot.TeleBot(TOKEN)
 
-STICKERS = {
+STICKERS: dict = {
     'go_fuck_urslf':
         'CAACAgIAAxkBAAIgSWA3-6kDhEPXc76-aetU7AWmF-yLAAKPAAOMgEUSfLi37KtGpWgeBA',
     'honey_or_in_the_face':
