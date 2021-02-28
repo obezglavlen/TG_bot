@@ -2,6 +2,9 @@ from config import BOT
 from random import random as rand
 from config import STICKERS
 from telebot import types
+from antimat import Antimat
+
+_antimat: Antimat = Antimat()
 
 
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
@@ -25,6 +28,19 @@ def reply_with_text(message: types.Message, text: str):
     :param text: text to answer
     """
     BOT.reply_to(message, text)
+
+# ======================== Message handle block ===============================
+
+
+@BOT.message_handler(func=lambda message: True, content_types=['text'])
+def antimat_check(message: types.Message):
+    """
+    Antimat checking function
+
+    :param message: str from use message (message.text)
+    """
+    if _antimat.check(message.text):
+        reply_with_text(message, 'Why a u gae?')
 
 
 # Вывод сообщения при получении команды "/start" или "/help"
@@ -65,6 +81,8 @@ def sticker_reply(message):
     if n == 4:
         # Тебя в детстве ебали?
         reply_with_sticker(message, STICKERS['u_were_fucked_in_children'])
+
+# ===================== Message handle block ends =============================
 
 
 def start_handing():
