@@ -4,7 +4,7 @@ import telebot
 TOKEN: str = '1118590522:AAFIXZ2RbT5KQAaoRsXaM1dmkxboFm2E2JA'
 
 # Объект бота
-BOT: object = telebot.TeleBot(TOKEN)
+BOT: telebot.TeleBot = telebot.TeleBot(TOKEN)
 
 STICKERS: dict = {
     'go_fuck_urslf':

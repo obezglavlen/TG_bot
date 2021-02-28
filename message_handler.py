@@ -29,7 +29,7 @@ def reply_with_text(message: types.Message, text: str):
 
 # Вывод сообщения при получении команды "/start" или "/help"
 @BOT.message_handler(commands=['start', 'help'], func=lambda message: True)
-def send_welcome(message: str):
+def send_welcome(message):
     """
     Answer welcome message to user, if it wrote '/start' or '/help'
 
@@ -40,7 +40,7 @@ def send_welcome(message: str):
 
 # Если приходит стикер - ответить стикером в ответ
 @BOT.message_handler(func=lambda message: True, content_types=['sticker'])
-def sticker_reply(message: str):
+def sticker_reply(message):
     """
     If user send a sticker, bot reply on this message with a
     random sticker.
