@@ -27,12 +27,14 @@ def reply_with_text(message: types.Message, text: str):
     BOT.reply_to(message, text)
 
 
+# ======================== Message handle block ===============================
+
+
 # Вывод сообщения при получении команды "/start" или "/help"
 @BOT.message_handler(commands=['start', 'help'], func=lambda message: True)
 def send_welcome(message):
     """
     Answer welcome message to user, if it wrote '/start' or '/help'
-
     :param message: message object from bot
     """
     reply_with_text(message, "Howdy, how are you doing?")
@@ -46,7 +48,6 @@ def sticker_reply(message):
     random sticker.
     To get another sticker from api you need to get log:
         print(message['sticker']['file_id'])
-
     :param message: message object from bot
     """
     n = round(rand() * 4)
@@ -65,6 +66,9 @@ def sticker_reply(message):
     if n == 4:
         # Тебя в детстве ебали?
         reply_with_sticker(message, STICKERS['u_were_fucked_in_children'])
+
+
+# ===================== Message handle block ends =============================
 
 
 def start_handing():
