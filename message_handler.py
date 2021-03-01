@@ -1,4 +1,3 @@
-import os
 from random import random as rand
 from config import BOT, STICKERS
 from telebot import types
