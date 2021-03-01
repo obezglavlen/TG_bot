@@ -1,7 +1,8 @@
-from config import BOT
+import os
 from random import random as rand
-from config import STICKERS
+from config import BOT, STICKERS
 from telebot import types
+from speech_recognize import recognize
 
 
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
@@ -36,6 +37,14 @@ def send_welcome(message):
     :param message: message object from bot
     """
     reply_with_text(message, "Howdy, how are you doing?")
+
+
+@BOT.message_handler(func=lambda message: True, content_types=['voice'])
+def speech_recognize(message):
+
+    file_info = BOT.get_file(message.voice.file_id)
+    downloaded_file = BOT.download_file(file_info.file_path)
+    reply_with_text(message, recognize(downloaded_file))
 
 
 # Если приходит стикер - ответить стикером в ответ
