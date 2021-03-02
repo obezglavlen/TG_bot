@@ -1,7 +1,6 @@
 from config import __BOT__
 from random import random as rand
 
-
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
 def reply_with_sticker(message, sticker_id: str = None):
     """
