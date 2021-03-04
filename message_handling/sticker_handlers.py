@@ -1,6 +1,6 @@
 from config import BOT, STICKERS
 from message_handling.utility import reply_with_sticker
-from random import random as rand
+from Utility.random import get_random_number
 
 
 @BOT.message_handler(func=lambda message: True, content_types=['sticker'])
@@ -10,9 +10,10 @@ def sticker_reply(message):
     random sticker.
     To get another sticker from api you need to get log:
         print(message['sticker']['file_id'])
+
     :param message: message object from bot
     """
-    n = round(rand() * 4)
+    n = get_random_number(4)
     if n == 0:
         # Иди нахуй
         reply_with_sticker(message, STICKERS['go_fuck_urslf'])
@@ -28,10 +29,3 @@ def sticker_reply(message):
     if n == 4:
         # Тебя в детстве ебали?
         reply_with_sticker(message, STICKERS['u_were_fucked_in_children'])
-
-
-def start_handing():
-    """
-    Loop bot for stay alive
-    """
-    BOT.polling()
