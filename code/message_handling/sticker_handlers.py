@@ -1,6 +1,6 @@
-from config import BOT, STICKERS
-from message_handling.utility import reply_with_sticker
-from Utility.random import get_random_number
+from code.config import BOT, STICKERS
+from code.message_handling.utility import reply_with_sticker
+from code.Utility.random import get_random_number
 
 
 @BOT.message_handler(func=lambda message: True, content_types=['sticker'])

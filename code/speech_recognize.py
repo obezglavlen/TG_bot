@@ -1,8 +1,11 @@
 import speech_recognition as sr
 from subprocess import Popen
 
+path = './tmp/tmp.file'
+path_wav = path + '.wav'
 
-def file2wav(file='./tmp/tmp.file'):
+
+def file2wav(file=path):
     """
     Converting file to .wav for using in recognition
 
@@ -10,8 +13,7 @@ def file2wav(file='./tmp/tmp.file'):
     './tmp/tmp.file'
     """
 
-    args = ['ffmpeg', '-i', file, './tmp/tmp.file.wav', '-y', '-v',
-            'quiet']
+    args = ['ffmpeg', '-i', file, path_wav, '-y', '-v', 'quiet']
     process = Popen(args)
     process.wait()
 
@@ -23,7 +25,7 @@ def recognize(file):
     :return: text from audio
     """
 
-    with open('./tmp/tmp.file', 'wb') as tmp_file:
+    with open(path, 'wb') as tmp_file:
         tmp_file.write(file)
 
     # Convert file
@@ -31,7 +33,7 @@ def recognize(file):
 
     r = sr.Recognizer()
 
-    with sr.AudioFile('./tmp/tmp.file.wav') as source:
+    with sr.AudioFile(path_wav) as source:
         audio = r.record(source)
 
     try:
