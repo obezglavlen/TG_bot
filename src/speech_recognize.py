@@ -2,7 +2,7 @@ import speech_recognition as sr
 from subprocess import Popen
 
 path = './tmp/tmp.file'
-path_wav = path + '.wav'
+path_wav = './tmp/tmp.file.wav'
 
 
 def file2wav(file=path):
@@ -10,7 +10,7 @@ def file2wav(file=path):
     Converting file to .wav for using in recognition
 
     :param file: name of file or path to file. Default:
-    './tmp/tmp.file'
+    '../tmp/tmp.file'
     """
 
     args = ['ffmpeg', '-i', file, path_wav, '-y', '-v', 'quiet']

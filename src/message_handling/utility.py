@@ -1,5 +1,5 @@
 from telebot import types
-from code.config import BOT
+from src.config import BOT
 
 
 # Создал функцию, чтобы можно было прикрепить к стикеру ответ
