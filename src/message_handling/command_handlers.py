@@ -1,6 +1,7 @@
 from src.message_handling.utility import reply_with_text
 from src.config import BOT
 from src.Utility.random import *
+import re
 
 
 # Вывод сообщения при получении команды "/start" или "/help"
@@ -15,31 +16,24 @@ def send_welcome(message):
 
 @BOT.message_handler(commands=['random'])
 def random_number(message):
-    argc = message.text.split(' ')[1:]
+    args = re.split(' +', message.text)[1:]
+    print(args)
 
-    if len(argc) > 2:
-        reply_with_text(message, 'Too many arguments')
+    if len(args) > 2 or len(args) < 1:
+        reply_with_text(message, '1 or 2 arguments only')
         return
 
-    elif len(argc) == 1:
-        try:
-            int(argc[0])
-        except ValueError:
-            reply_with_text(message, 'Invalid arguments')
-            return
-        else:
-            reply_with_text(message, get_random_number(int(argc[0])))
-            return
+    try:
+        args = list(map(int, args))
+    except ValueError:
+        reply_with_text(
+            message, 'Invalid arguments')
+        return
+
+    if len(args) == 1:
+        reply_with_text(message, get_random_number(args[0]))
+        return
 
     else:
-        try:
-            for arg in argc:
-                int(arg)
-        except ValueError:
-            reply_with_text(
-                message, 'Invalid arguments')
-            return
-        else:
-            reply_with_text(
-                message, get_random_number(int(argc[0]), int(argc[1])))
-            return
+        reply_with_text(message, get_random_number(args[0], args[1]))
+        return
