@@ -4,14 +4,17 @@ from src.message_handling.utility import (
     anime_from_anilist,
 )
 import requests
-from src.config import BOT
-import os
-import telebot
+from src.config import BOT, TOKEN
 
 
 def filter_anime(anime: list):
-    """
-    Filter anime from anilist
+    """Filter anime from list
+
+    Args:
+        anime (list): list of anime
+
+    Returns:
+        list: filtered anime list
     """
     used_anilists = []
     filtered_results = []
@@ -41,8 +44,16 @@ def anime_pic(message):
         elif message.photo:
             file_id = message.photo[-1].file_id
         file_path = BOT.get_file(file_id).file_path
-        file_url = f"https://api.telegram.org/file/bot{os.environ.get('TELEGRAM_TOKEN')}/{file_path}"
-        api_url = f"https://api.trace.moe/search?{'&'.join([f'uid=tg{message.from_user.id}', f'url={file_url}', 'cutBorders=1'])}"
+        file_url = f"https://api.telegram.org/file/bot{TOKEN}/{file_path}"
+        api_url = "https://api.trace.moe/search?{}".format(
+            "&".join(
+                [
+                    f"uid=tg{message.from_user.id}",
+                    f"url={file_url}",
+                    "cutBorders=1",
+                ]
+            )
+        )
         search_result = None
         try:
             search_result = requests.get(api_url)
@@ -54,13 +65,12 @@ def anime_pic(message):
             reply_with_text(message, "trace.moe API error, please try again later.")
             return
         if search_result.status_code in [502, 503, 504]:
-            reply_with_text(
-                message, "trace.moe server is busy, please try again later."
-            )
+            reply_with_text(message, "trace.moe server is busy, please try again later.")
             return
         if search_result.status_code in [402, 429]:
             reply_with_text(
-                message, "You exceeded the search limit, please try again later"
+                message,
+                "You exceeded the search limit, please try again later",
             )
             return
         if search_result.status_code >= 400:
@@ -85,7 +95,6 @@ def anime_pic(message):
 
             anilist = result["anilist"]
             similarity = result["similarity"]
-            filename = result["filename"]
             video = result["video"]
 
             anime = None
@@ -110,7 +119,7 @@ def anime_pic(message):
                 f"Similarity: {similarity}\n"
             )
 
-            reply_with_text(message, reply_message) if anime[
-                "isAdult"
-            ] else reply_with_video(message, video, reply_message)
+            reply_with_text(message, reply_message) if anime["isAdult"] else reply_with_video(
+                message, video, reply_message
+            )
         return

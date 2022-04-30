@@ -5,25 +5,26 @@ path = "./tmp/tmp.file"
 path_wav = "./tmp/tmp.file.wav"
 
 
-def file2wav(in_file=path, out_file=path_wav):
-    """
-    Converting file to .wav for using in recognition
+def file2wav(in_file: str = path, out_file: str = path_wav):
+    """Converting file to .wav for using in recognition
 
-    :param file: name of file or path to file. Default:
-    "../tmp/tmp.file"
+    Args:
+        in_file (str, optional): name of file or path to file. Default: "../tmp/tmp.file"
+        out_file (str, optional): name of file or path to file. Default: "../tmp/tmp.file.wav"
     """
 
-    args = ["ffmpeg", "-i",
-            in_file, out_file, "-y", "-v", "quiet"]
+    args = ["ffmpeg", "-i", in_file, out_file, "-y", "-v", "quiet"]
     process = Popen(args)
     process.wait()
 
 
 def recognize(file):
-    """
-    Recognize the audio file and transfer it into text
+    """Recognize the audio file and transfer it into text
 
-    :return: text from audio
+    Args:
+        file (str): name of file or path to file. Default: "../tmp/tmp.file.wav"
+    Returns:
+        str: text from audio
     """
 
     with open(path, "wb") as tmp_file:
@@ -44,9 +45,8 @@ def recognize(file):
         # instead of `r.recognize_google(audio)
         text = r.recognize_google(audio, language="ru-RU")
         print(text)
-        return "Lapis thinks you said:\n\n" + text
+        return text
     except sr.UnknownValueError:
         return "Lapis could not understand audio"
     except sr.RequestError as e:
-        return f"Could not request results from Google Recognize" \
-               f" Recognition service; {e}"
+        return f"Could not request results from Google Recognize\nError: {e}"

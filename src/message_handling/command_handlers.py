@@ -7,12 +7,10 @@ import src.Utility.database as db
 from src.Utility.exceptions import TimeoutException, UserNotFoundException
 
 
-# Вывод сообщения при получении команды "/start" или "/help"
 @BOT.message_handler(commands=["start", "help", "h"])
 def send_welcome(message: types.Message):
     """
     Answer welcome message to user, if it wrote "/start" or "/help"
-    :param message: message object from bot
     """
     db.add_new_user(message.from_user)
     reply_with_text(message, "Тринатцать")
@@ -49,6 +47,9 @@ def random_phrase(message):
 
 @BOT.message_handler(commands=["dick"])
 def dick(message):
+    """
+    Simple random game, for fun
+    """
     args = re.split(" +", message.text)[1:]
 
     if len(args) >= 1:
@@ -61,9 +62,7 @@ def dick(message):
                 return
             user_dick = db.get_user_dick(user["_id"])
             if user_dick:
-                reply_with_text(
-                    message, f"У этого {entity} елдыга {user_dick} миллиметров"
-                )
+                reply_with_text(message, f"У этого {entity} елдыга {user_dick} миллиметров")
                 return
             else:
                 reply_with_text(message, f"У этого {entity} нет елдыга")
