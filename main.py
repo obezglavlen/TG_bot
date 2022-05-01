@@ -25,8 +25,8 @@ def webhook():
 
 if __name__ == "__main__":
     # If you host bot on Heroku, you can use Flask server for webhook
-    # server.run(host="0.0.0.0", port=PORT)
+    server.run(host="0.0.0.0", port=PORT)
 
     # If you host bot on localhost, you can use bot polling
-    BOT.remove_webhook()
-    BOT.polling(none_stop=True)
+    # BOT.remove_webhook()
+    # BOT.polling(none_stop=True)
