@@ -26,7 +26,7 @@ def send_welcome(message: types.Message):
 
         return markup
 
-    send_msg(message.chat.id, "Для полной регистрации, отправьте свой контакт", reply_markup=get_markup())
+    send_msg(message, "Для полной регистрации, отправьте свой контакт", reply_markup=get_markup())
 
 
 @BOT.message_handler(commands=["random", "rand", "r"])
