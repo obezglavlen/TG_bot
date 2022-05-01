@@ -6,9 +6,10 @@ from telebot import types
 import src.Utility.database as db
 from src.Utility.exceptions import TimeoutException, UserNotFoundException
 from src.Utility.animelist import menus
+from src.message_handling.anime_handlers import anime_search
 
 
-@BOT.message_handler(commands=["start", "help", "h"])
+@BOT.message_handler(commands=["start"])
 def send_welcome(message: types.Message):
     """
     Answer welcome message to user, if it wrote "/start" or "/help"
@@ -16,7 +17,8 @@ def send_welcome(message: types.Message):
     db.add_new_user(message.from_user)
     reply_with_text(message, "Тринатцать")
 
-    send_contact_button = types.KeyboardButton(text="✉ Отправить номер (Опционально)", request_contact=True)
+    send_contact_button = types.KeyboardButton(
+        text="✉ Отправить номер (Опционально)", request_contact=True)
     cancel_button = types.KeyboardButton(text="❌ Отмена")
 
     def get_markup():
@@ -27,7 +29,22 @@ def send_welcome(message: types.Message):
 
         return markup
 
-    send_msg(message, "Для полной регистрации, отправьте свой контакт", reply_markup=get_markup())
+    send_msg(message, "Для полной регистрации, отправьте свой контакт",
+             reply_markup=get_markup())
+
+
+@BOT.message_handler(commands=["help", "h"])
+def handle_help(message):
+    commands: list[types.BotCommand] = BOT.get_my_commands()
+    reply_with_text(message, "Список команд:\n" +
+                    "\n".join([f"/{command.command} - {command.description}" for command in commands]))
+
+
+@BOT.message_handler(commands=["search", "s"])
+def handle_anime_search(message):
+    msg = reply_with_text(
+        message, "Відправ мені зображення і я спробую знайти це аніме")
+    BOT.register_next_step_handler(msg, anime_search)
 
 
 @BOT.message_handler(commands=["random", "rand", "r"])
@@ -76,7 +93,8 @@ def dick(message):
                 return
             user_dick = db.get_user_dick(user["_id"])
             if user_dick:
-                reply_with_text(message, f"У этого {entity} елдыга {user_dick} миллиметров")
+                reply_with_text(
+                    message, f"У этого {entity} елдыга {user_dick} миллиметров")
                 return
             else:
                 reply_with_text(message, f"У этого {entity} нет елдыга")
@@ -109,4 +127,5 @@ def hadle_anime_list(message):
 
     markup = menus["main_menu"]
 
-    BOT.edit_message_reply_markup(chat_id=message.chat.id, message_id=answer_message.message_id, reply_markup=markup)
+    BOT.edit_message_reply_markup(
+        chat_id=message.chat.id, message_id=answer_message.message_id, reply_markup=markup)

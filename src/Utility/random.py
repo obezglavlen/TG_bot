@@ -32,5 +32,4 @@ def get_random_phrase() -> str:
         str: Random phrase
     """
     quote = requests.get("https://animechan.vercel.app/api/random").json()
-    print(quote)
     return choice(RANDOM_PHRASES)

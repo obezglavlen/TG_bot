@@ -14,7 +14,6 @@ def audio_recognize(message):
 
     :param message: message object from bot
     """
-    print(message)
     # Get content type as string from message object
     content_type = message.content_type
 
