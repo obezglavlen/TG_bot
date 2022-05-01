@@ -2,7 +2,7 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def back_button():
-    return InlineKeyboardButton(text="⬅ Назад", callback_data="cb_ani   me_back")
+    return InlineKeyboardButton(text="⬅ Назад", callback_data="cb_anime_back")
 
 
 def categories_menu_keyboard():
