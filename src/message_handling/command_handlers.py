@@ -5,6 +5,7 @@ import re
 from telebot import types
 import src.Utility.database as db
 from src.Utility.exceptions import TimeoutException, UserNotFoundException
+from src.Utility.animelist import menus
 
 
 @BOT.message_handler(commands=["start", "help", "h"])
@@ -99,3 +100,13 @@ def dick(message):
         except (TimeoutException, UserNotFoundException) as e:
             reply_with_text(message, e.message)
             return
+
+
+@BOT.message_handler(commands=["anime"])
+def hadle_anime_list(message):
+    """Handle /anime command and send keyboard with buttons for navigate"""
+    answer_message = send_msg(message, "Виберіть дію:")
+
+    markup = menus["main_menu"]
+
+    BOT.edit_message_reply_markup(chat_id=message.chat.id, message_id=answer_message.message_id, reply_markup=markup)

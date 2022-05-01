@@ -5,6 +5,7 @@ from src.message_handling.utility import (
 )
 import requests
 from src.config import BOT, TOKEN
+from src.Utility.animelist import menus
 
 
 def filter_anime(anime: list):
@@ -58,14 +59,17 @@ def anime_pic(message):
         try:
             search_result = requests.get(api_url)
         except Exception:
-            reply_with_text(message, "trace.moe API error, please try again later.")
+            reply_with_text(
+                message, "trace.moe API error, please try again later.")
             return
 
         if not search_result:
-            reply_with_text(message, "trace.moe API error, please try again later.")
+            reply_with_text(
+                message, "trace.moe API error, please try again later.")
             return
         if search_result.status_code in [502, 503, 504]:
-            reply_with_text(message, "trace.moe server is busy, please try again later.")
+            reply_with_text(
+                message, "trace.moe server is busy, please try again later.")
             return
         if search_result.status_code in [402, 429]:
             reply_with_text(
@@ -74,13 +78,15 @@ def anime_pic(message):
             )
             return
         if search_result.status_code >= 400:
-            reply_with_text(message, "trace.moe API error, please try again later.")
+            reply_with_text(
+                message, "trace.moe API error, please try again later.")
             return
 
         search_result = search_result.json()
 
         if search_result["error"]:
-            reply_with_text(message, "trace.moe API error, please try again later.")
+            reply_with_text(
+                message, "trace.moe API error, please try again later.")
             return
         if len(search_result["result"]) <= 0:
             reply_with_text(message, "No anime found")
@@ -101,11 +107,13 @@ def anime_pic(message):
             try:
                 anime = anime_from_anilist(anilist)
             except Exception:
-                reply_with_text(message, "Anilist API error, please try again later.")
+                reply_with_text(
+                    message, "Anilist API error, please try again later.")
                 return
 
             if not anime:
-                reply_with_text(message, "Anilist API error, please try again later.")
+                reply_with_text(
+                    message, "Anilist API error, please try again later.")
                 return
 
             n = "\n"
@@ -123,3 +131,43 @@ def anime_pic(message):
                 message, video, reply_message
             )
         return
+
+
+@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_add")
+def handle_add_anime(call):
+    BOT.edit_message_text(
+        message_id=call.message.message_id,
+        chat_id=call.message.chat.id,
+        text="Додання аніме до списку...",
+        reply_markup=menus["add_menu"],
+    )
+
+
+@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_remove")
+def handle_remove_anime(call):
+    BOT.edit_message_text(
+        message_id=call.message.message_id,
+        chat_id=call.message.chat.id,
+        text="Видалення аніме зі списку...",
+        reply_markup=menus["remove_menu"],
+    )
+
+
+@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_categories")
+def handle_show_anime(call):
+    BOT.edit_message_text(
+        message_id=call.message.message_id,
+        chat_id=call.message.chat.id,
+        text="Перегляд списків ...",
+        reply_markup=menus["show_menu"],
+    )
+
+
+@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_back")
+def handle_back_to_main(call):
+    BOT.edit_message_text(
+        message_id=call.message.message_id,
+        chat_id=call.message.chat.id,
+        text="Виберіть дію:",
+        reply_markup=menus["main_menu"],
+    )

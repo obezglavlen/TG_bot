@@ -10,7 +10,7 @@ def reply_with_sticker(message: types.Message, sticker_id: str) -> None:
     :param message: message object from bot
     :param sticker_id: sticker id to send
     """
-    BOT.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
+    return BOT.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
 
 
 def reply_with_text(message: types.Message, text: str, **kwargs) -> None:
@@ -21,7 +21,7 @@ def reply_with_text(message: types.Message, text: str, **kwargs) -> None:
         text (str): text to reply
     """
 
-    BOT.reply_to(message, text, **kwargs)
+    return BOT.reply_to(message, text, **kwargs)
 
 
 def send_msg(message: types.Message, text: str, **kwargs) -> None:
@@ -31,7 +31,7 @@ def send_msg(message: types.Message, text: str, **kwargs) -> None:
         message (telebot.types.Message): message object from bot
         text (str): text to reply
     """
-    BOT.send_message(message.chat.id, text, **kwargs)
+    return BOT.send_message(message.chat.id, text, **kwargs)
 
 
 def reply_with_video(message: types.Message, video: str, text: str) -> None:
@@ -42,7 +42,7 @@ def reply_with_video(message: types.Message, video: str, text: str) -> None:
         video (str): video url
         text (str): text to reply
     """
-    BOT.send_video(
+    return BOT.send_video(
         chat_id=message.chat.id,
         reply_to_message_id=message.message_id,
         video=video,
