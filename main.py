@@ -1,5 +1,5 @@
 from src.message_handling import *
-from src.config import BOT
+from src.config import BOT, TOKEN, PORT, HEROKU
 from dotenv import load_dotenv
 import os
 from flask import Flask, request
@@ -8,10 +8,6 @@ from telebot.types import Update
 
 # Load .env file
 load_dotenv()
-
-TOKEN = os.environ.get("TELEGRAM_TOKEN")
-PORT = int(os.environ.get("PORT", 5000))
-HEROKU_URL = os.environ.get("HEROKU_URL")
 server = Flask(__name__)
 
 
@@ -24,7 +20,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     BOT.remove_webhook()
-    BOT.set_webhook(url=HEROKU_URL + TOKEN, allowed_updates=["message"])
+    BOT.set_webhook(url=HEROKU + TOKEN, allowed_updates=["message"])
     return "!", 200
 
 
