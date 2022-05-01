@@ -17,16 +17,14 @@ server = Flask(__name__)
 
 @server.route("/" + TOKEN, methods=["POST"])
 def getMessage():
-    BOT.process_new_updates(
-        [Update.de_json(request.stream.read().decode("utf-8"))]
-    )
+    BOT.process_new_updates([Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
 
 
 @server.route("/")
 def webhook():
     BOT.remove_webhook()
-    BOT.set_webhook(url=HEROKU_URL + TOKEN)
+    BOT.set_webhook(url=HEROKU_URL + TOKEN, allowed_updates=["message"])
     return "!", 200
 
 
