@@ -16,6 +16,7 @@ def add_new_user(user: types.User) -> dict | None:
     user_first_name = user["first_name"]
     user_last_name = user["last_name"]
     user_language_code = user["language_code"]
+    user_number = None
 
     if not DB.users.find_one({"_id": user_id}):
         user = DB.users.insert_one(
@@ -26,11 +27,27 @@ def add_new_user(user: types.User) -> dict | None:
                     "first_name": user_first_name,
                     "last_name": user_last_name,
                     "language_code": user_language_code,
+                    "number": user_number,
                 },
             }
         )
         return user
     return None
+
+
+def update_user_by_id(user_id: int, user_data: dict) -> dict:
+    """Update user data
+
+    Args:
+        user_id (int): User id from message.from_user
+        user_data (dict): User data to update
+
+    Returns:
+        dict: User data after update
+    """
+    user = DB.users.find_one({"_id": user_id})["user"]
+    DB.users.update_one({"_id": user_id}, {"$set": {"user": {**user, **user_data}}}, upsert=True)
+    return get_user_by_id(user_id)
 
 
 def get_user_by_id(user_id: int) -> dict:

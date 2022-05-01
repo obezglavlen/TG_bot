@@ -13,16 +13,25 @@ def reply_with_sticker(message: types.Message, sticker_id: str) -> None:
     BOT.send_sticker(message.chat.id, sticker_id, reply_to_message_id=message.message_id)
 
 
-def reply_with_text(message: types.Message, text: str, markdown: bool = False) -> None:
+def reply_with_text(message: types.Message, text: str, **kwargs) -> None:
     """Overwrite method to reply on message with text
 
     Args:
         message (telebot.types.Message): message object from bot
         text (str): text to reply
-        markdown (bool, optional): if True, text will be sent as markdown
     """
 
-    BOT.reply_to(message, text, parse_mode="Markdown" if markdown else None)
+    BOT.reply_to(message, text, **kwargs)
+
+
+def send_msg(message: types.Message, text: str, **kwargs) -> None:
+    """Overwrite method to send message
+
+    Args:
+        message (telebot.types.Message): message object from bot
+        text (str): text to reply
+    """
+    BOT.send_message(message.chat.id, text, **kwargs)
 
 
 def reply_with_video(message: types.Message, video: str, text: str) -> None:

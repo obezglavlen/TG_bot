@@ -1,4 +1,4 @@
-from src.message_handling.utility import reply_with_text
+from src.message_handling.utility import reply_with_text, send_msg
 from src.config import BOT
 import src.Utility.random as rand
 import re
@@ -14,6 +14,19 @@ def send_welcome(message: types.Message):
     """
     db.add_new_user(message.from_user)
     reply_with_text(message, "Тринатцать")
+
+    send_contact_button = types.KeyboardButton(text="✉ Отправить номер (Опционально)", request_contact=True)
+    cancel_button = types.KeyboardButton(text="❌ Отмена")
+
+    def get_markup():
+        markup = types.ReplyKeyboardMarkup()
+        markup.row_width = 1
+        markup.resize_keyboard = True
+        markup.add(send_contact_button, cancel_button)
+
+        return markup
+
+    send_msg(message.chat.id, "Для полной регистрации, отправьте свой контакт", reply_markup=get_markup())
 
 
 @BOT.message_handler(commands=["random", "rand", "r"])
