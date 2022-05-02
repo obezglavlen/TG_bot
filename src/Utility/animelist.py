@@ -1,11 +1,11 @@
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def back_button():
-    return InlineKeyboardButton(text="⬅ Назад", callback_data="cb_anime_back")
+def back_button(user_id):
+    return InlineKeyboardButton(text="⬅ Назад", callback_data=f"cb_anime_back {user_id}")
 
 
-def categories_menu_keyboard(prev_callback_data):
+def categories_menu_keyboard(prev_callback_data, user_id):
     buttons = [
         {
             "name": "Переглянуті",
@@ -30,17 +30,17 @@ def categories_menu_keyboard(prev_callback_data):
     keyboard.add(
         *[
             InlineKeyboardButton(
-                text=category["name"], callback_data=f"cb_anime_category_{category['cb']} {prev_callback_data}"
+                text=category["name"], callback_data=f"cb_anime_category_{category['cb']} {prev_callback_data} {user_id}"
             )
             for category in buttons
         ]
     )
-    keyboard.add(back_button())
+    keyboard.add(back_button(user_id))
 
     return keyboard
 
 
-def main_menu_keyboard():
+def main_menu_keyboard(user_id):
     buttons = [
         {
             "name": "Додати аніме",
@@ -61,7 +61,7 @@ def main_menu_keyboard():
     keyboard.add(
         *[
             InlineKeyboardButton(
-                text=button["name"], callback_data=f"cb_anime_{button['cb']}"
+                text=button["name"], callback_data=f"cb_anime_{button['cb']} {user_id}"
             )
             for button in buttons
         ]

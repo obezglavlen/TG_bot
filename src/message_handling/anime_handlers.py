@@ -5,7 +5,7 @@ from src.message_handling.utility import (
 )
 import requests
 from src.config import BOT, TOKEN
-from src.Utility.animelist import menus
+from src.Utility.animelist import categories_menu_keyboard, main_menu_keyboard
 from src.Utility.database import update_user_anime, get_user_anime_by_user_id
 import re
 from telebot import types
@@ -132,135 +132,150 @@ def anime_search(message):
 
 
 # Handling Select option callback
-@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_add")
+@BOT.callback_query_handler(func=lambda call: "cb_anime_add" in call.data and str(call.from_user.id) in call.data)
 def handle_add_anime(call):
+    markup = categories_menu_keyboard("prev_anime_add", call.from_user.id)
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Додання аніме до списку...",
-        reply_markup=menus["add_menu"]("cb_anime_add"),
+        reply_markup=categories_menu_keyboard(
+            "prev_anime_add", call.from_user.id),
     )
 
 
-@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_remove")
+@BOT.callback_query_handler(func=lambda call: "cb_anime_remove" in call.data and str(call.from_user.id) in call.data)
 def handle_remove_anime(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Видалення аніме зі списку...",
-        reply_markup=menus["remove_menu"]("cb_anime_remove"),
+        reply_markup=categories_menu_keyboard(
+            "prev_anime_remove", call.from_user.id),
     )
 
 
-@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_categories")
+@BOT.callback_query_handler(func=lambda call: "cb_anime_categories" in call.data and str(call.from_user.id) in call.data)
 def handle_show_anime(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Перегляд списків ...",
-        reply_markup=menus["show_menu"]("cb_anime_categories"),
+        reply_markup=categories_menu_keyboard(
+            "prev_anime_categories", call.from_user.id),
     )
 
 
 # Handling Select category callbacks
-@BOT.callback_query_handler(func=lambda call: "cb_anime_category_seen" in call.data)
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_seen" in call.data and str(call.from_user.id) in call.data)
 def handle_seen_category(call):
-    if "cb_anime_add" in call.data:
+    if "prev_anime_add" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="add", category="seen", call=call)
         return
-    if "cb_anime_remove" in call.data:
-        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+    if "prev_anime_remove" in call.data:
+
+        anime_list = get_user_anime_by_user_id(call.from_user.id, "seen")
         BOT.edit_message_text(
             message_id=call.message.message_id,
             chat_id=call.message.chat.id,
-            text="\n".join(get_user_anime_by_user_id(
-                call.from_user.id, "seen")),
+            text="\n".join(anime_list) if len(
+                anime_list) else "Список порожній",
             reply_markup=call.message.reply_markup,
         )
-        BOT.register_next_step_handler(
-            call.message, handle_anime_title, action="remove", category="seen", call=call)
+        if len(anime_list):
+            BOT.answer_callback_query(call.id, "Відправте назву аніме")
+            BOT.register_next_step_handler(
+                call.message, handle_anime_title, action="remove", category="seen", call=call)
         return
-    if "cb_anime_categories" in call.data:
+    if "prev_anime_categories" in call.data:
         BOT.answer_callback_query(call.id, "Перегляд списку переглянутих")
         reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
             call.from_user.id, "seen")))
         return
 
 
-@BOT.callback_query_handler(func=lambda call: "cb_anime_category_abandoned" in call.data)
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_abandoned" in call.data and str(call.from_user.id) in call.data)
 def handle_abandoned_category(call):
-    if "cb_anime_add" in call.data:
+    if "prev_anime_add" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="add", category="abandoned", call=call)
         return
-    if "cb_anime_remove" in call.data:
-        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+    if "prev_anime_remove" in call.data:
+
+        anime_list = get_user_anime_by_user_id(call.from_user.id, "abandoned")
         BOT.edit_message_text(
             message_id=call.message.message_id,
             chat_id=call.message.chat.id,
-            text="\n".join(get_user_anime_by_user_id(
-                call.from_user.id, "abandoned")),
+            text="\n".join(anime_list) if len(
+                anime_list) else "Список порожній",
             reply_markup=call.message.reply_markup,
         )
-        BOT.register_next_step_handler(
-            call.message, handle_anime_title, action="remove", category="abandoned", call=call)
+        if len(anime_list):
+            BOT.answer_callback_query(call.id, "Відправте назву аніме")
+            BOT.register_next_step_handler(
+                call.message, handle_anime_title, action="remove", category="abandoned", call=call)
         return
-    if "cb_anime_categories" in call.data:
+    if "prev_anime_categories" in call.data:
         BOT.answer_callback_query(call.id, "Перегляд списку покинутих")
         reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
             call.from_user.id, "abandoned")))
         return
 
 
-@BOT.callback_query_handler(func=lambda call: "cb_anime_category_liked" in call.data)
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_liked" in call.data and str(call.from_user.id) in call.data)
 def handle_liked_category(call):
-    if "cb_anime_add" in call.data:
+    if "prev_anime_add" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="add", category="liked", call=call)
         return
-    if "cb_anime_remove" in call.data:
-        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+    if "prev_anime_remove" in call.data:
+
+        anime_list = get_user_anime_by_user_id(call.from_user.id, "liked")
         BOT.edit_message_text(
             message_id=call.message.message_id,
             chat_id=call.message.chat.id,
-            text="\n".join(get_user_anime_by_user_id(
-                call.from_user.id, "liked")),
+            text="\n".join(anime_list) if len(
+                anime_list) else "Список порожній",
             reply_markup=call.message.reply_markup,
         )
-        BOT.register_next_step_handler(
-            call.message, handle_anime_title, action="remove", category="liked", call=call)
+        if len(anime_list):
+            BOT.answer_callback_query(call.id, "Відправте назву аніме")
+            BOT.register_next_step_handler(
+                call.message, handle_anime_title, action="remove", category="liked", call=call)
         return
-    if "cb_anime_categories" in call.data:
+    if "prev_anime_categories" in call.data:
         BOT.answer_callback_query(call.id, "Перегляд списку улюблених")
         reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
             call.from_user.id, "liked")))
         return
 
 
-@BOT.callback_query_handler(func=lambda call: "cb_anime_category_watching" in call.data)
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_watching" in call.data and str(call.from_user.id) in call.data)
 def handle_watching_category(call):
-    if "cb_anime_add" in call.data:
+    if "prev_anime_add" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="add", category="watching", call=call)
         return
-    if "cb_anime_remove" in call.data:
-        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+    if "prev_anime_remove" in call.data:
+        anime_list = get_user_anime_by_user_id(call.from_user.id, "watching")
         BOT.edit_message_text(
             message_id=call.message.message_id,
             chat_id=call.message.chat.id,
-            text="\n".join(get_user_anime_by_user_id(
-                call.from_user.id, "watching")),
+            text="\n".join(anime_list) if len(
+                anime_list) else "Список порожній",
             reply_markup=call.message.reply_markup,
         )
-        BOT.register_next_step_handler(
-            call.message, handle_anime_title, action="remove", category="watching", call=call)
+        if len(anime_list):
+            BOT.answer_callback_query(call.id, "Відправте назву аніме")
+            BOT.register_next_step_handler(
+                call.message, handle_anime_title, action="remove", category="watching", call=call)
         return
-    if "cb_anime_categories" in call.data:
+    if "prev_anime_categories" in call.data:
         BOT.answer_callback_query(call.id, "Перегляд списку 'Переглядаю'")
         reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
             call.from_user.id, "watching")))
@@ -268,10 +283,10 @@ def handle_watching_category(call):
 
 
 def handle_anime_title(message: types.Message, action: str, category: str, call: types.CallbackQuery = None):
+    if not message.from_user.id == call.from_user.id:
+        return BOT.register_next_step_handler(message, handle_anime_title, action=action, category=category, call=call)
     if not message.content_type == "text":
         reply_with_text(message, "Введіть назву аніме")
-        return BOT.register_next_step_handler(message, handle_anime_title, action=action, category=category, call=call)
-    if not message.from_user.id == call.from_user.id:
         return BOT.register_next_step_handler(message, handle_anime_title, action=action, category=category, call=call)
     # replace all spaces with underscores and split by newline using regex
     anime_titles = [re.sub(" +", " ", anime)
@@ -290,17 +305,16 @@ def handle_anime_title(message: types.Message, action: str, category: str, call:
                 text="Видалення аніме зі списку...",
                 reply_markup=call.message.reply_markup,
             )
-            print(updated)
             reply_with_text(message, f"Видалено {updated} з {len(anime_titles)} аніме" if
                             updated else "Аніме не знайдено")
 
 
 # Handling BACK button callback
-@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_back")
+@BOT.callback_query_handler(func=lambda call: "cb_anime_back" in call.data and str(call.from_user.id) in call.data)
 def handle_back_to_main(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Виберіть дію:",
-        reply_markup=menus["main_menu"](),
+        reply_markup=main_menu_keyboard(call.from_user.id),
     )

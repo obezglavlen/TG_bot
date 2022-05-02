@@ -185,29 +185,29 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
     """
     user_anime = DB.anime.find_one({"_id": user_id})
     if not user_anime:
-        return ["У вас ще нема аніме у цьому списку"]
+        return []
     match category:
         case "seen":
             if "anime_seen" in user_anime and len(user_anime["anime_seen"]):
                 animes = user_anime["anime_seen"]
                 return animes
             else:
-                return ["У вас ще нема аніме у цьому списку"]
+                return []
         case "watching":
             if "anime_watching" in user_anime and len(user_anime["anime_watching"]):
                 animes = user_anime["anime_watching"]
                 return animes
             else:
-                return ["У вас ще нема аніме у цьому списку"]
+                return []
         case "liked":
             if "anime_liked" in user_anime and len(user_anime["anime_liked"]):
                 animes = user_anime["anime_liked"]
                 return animes
             else:
-                return ["У вас ще нема аніме у цьому списку"]
+                return []
         case "abandoned":
             if "anime_abandoned" in user_anime and len(user_anime["anime_abandoned"]):
                 animes = user_anime["anime_abandoned"]
                 return animes
             else:
-                return ["У вас ще нема аніме у цьому списку"]
+                return []
