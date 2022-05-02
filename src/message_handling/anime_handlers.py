@@ -170,6 +170,8 @@ def handle_seen_category(call):
         return
     if "cb_anime_remove" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.edit_message_text(call.message.message_id, call.message.chat.id, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "seen")))
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="remove", category="seen")
         return
@@ -189,6 +191,8 @@ def handle_abandoned_category(call):
         return
     if "cb_anime_remove" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.edit_message_text(call.message.message_id, call.message.chat.id, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "abandoned")))
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="remove", category="abandoned")
         return
@@ -208,6 +212,8 @@ def handle_liked_category(call):
         return
     if "cb_anime_remove" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.edit_message_text(call.message.message_id, call.message.chat.id, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "liked")))
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="remove", category="liked")
         return
@@ -227,6 +233,8 @@ def handle_watching_category(call):
         return
     if "cb_anime_remove" in call.data:
         BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.edit_message_text(call.message.message_id, call.message.chat.id, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "watching")))
         BOT.register_next_step_handler(
             call.message, handle_anime_title, action="remove", category="watching")
         return
