@@ -34,8 +34,12 @@ def send_welcome(message: types.Message):
 
 
 @BOT.message_handler(commands=["help", "h"])
-def handle_help(message):
-    commands: list[types.BotCommand] = BOT.get_my_commands()
+def handle_help(message: types.Message):
+    commands: list[types.BotCommand] = None
+    if message.chat.type == "private":
+        commands = BOT.get_my_commands(types.BotCommandScopeAllPrivateChats())
+    elif message.chat.type in ["group", "supergroup"]:
+        commands = BOT.get_my_commands(types.BotCommandScopeAllGroupChats())
     reply_with_text(message, "Список команд:\n" +
                     "\n".join([f"/{command.command} - {command.description}" for command in commands]))
 
@@ -44,15 +48,20 @@ def handle_help(message):
 def handle_anime_search(message):
     msg = reply_with_text(
         message, "Відправ мені зображення і я спробую знайти це аніме")
-    BOT.register_next_step_handler(msg, anime_search)
+    BOT.register_next_step_handler(msg, anime_search, message.from_user.id)
 
 
 @BOT.message_handler(commands=["random", "rand", "r"])
 def random_number(message):
     args = re.split(" +", message.text)[1:]
 
-    if len(args) > 2 or len(args) < 1:
-        reply_with_text(message, "1 or 2 arguments only")
+    if len(args) == 0:
+        answers = ["Орел", "Решка"]
+        reply_with_text(message, answers[rand.get_random_number(-1, 1)])
+        return
+
+    if len(args) > 2:
+        reply_with_text(message, "0 or 1 or 2 arguments only")
         return
 
     try:
@@ -123,9 +132,14 @@ def dick(message):
 @BOT.message_handler(commands=["anime"])
 def hadle_anime_list(message):
     """Handle /anime command and send keyboard with buttons for navigate"""
+    if "private" != message.chat.type:
+        reply_with_text(
+            message, "Цю команду можна використовувати тільки в приватному чаті")
+        return
+
     answer_message = send_msg(message, "Виберіть дію:")
 
-    markup = main_menu_keyboard(message.from_user.id)
+    markup = main_menu_keyboard()
 
     BOT.edit_message_reply_markup(
         chat_id=message.chat.id, message_id=answer_message.message_id, reply_markup=markup)

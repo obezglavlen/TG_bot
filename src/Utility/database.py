@@ -135,45 +135,6 @@ def update_user_dick(user_id, dick) -> int:
     return get_user_dick(user_id)
 
 
-def update_user_anime(user_id: int, animes: list, action: str, category: str) -> list:
-    """Update user anime data
-
-    Args:
-        user_id (int): User id from message.from_user
-        anime (str): List of anime to add
-        action (str): Action to perform
-
-    Returns:
-        list: User anime after update
-    """
-    user_anime = DB.anime.find_one({"_id": user_id})
-    updated = []
-    if not user_anime:
-        match action:
-            case "add":
-                DB.anime.insert_one(
-                    {"_id": user_id})
-                updated = DB.anime.update_one(
-                    {"_id": user_id},
-                    {"$addToSet": {f"anime_{category}": {"$each": animes}}}
-                )
-            case "remove":
-                return []
-
-    else:
-        match action:
-            case "add":
-                updated = DB.anime.update_one(
-                    {"_id": user_id}, {"$addToSet": {f"anime_{category}": {"$each": animes}}}, upsert=True
-                )
-            case "remove":
-                updated = DB.anime.update_one(
-                    {"_id": user_id}, {"$pull": {f"anime_{category}": {"$in": animes}}}, upsert=True
-                )
-
-    return updated.modified_count
-
-
 def get_user_anime_by_user_id(user_id: int, category: str) -> list:
     """Get user anime data by user id
 
@@ -211,3 +172,52 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
                 return animes
             else:
                 return []
+
+
+def update_user_anime(user_id: int, animes: list, action: str, category: str) -> list:
+    """Update user anime data
+
+    Args:
+        user_id (int): User id from message.from_user
+        anime (str): List of anime to add
+        action (str): Action to perform
+
+    Returns:
+        list: User anime after update
+    """
+    user_anime = DB.anime.find_one({"_id": user_id})
+    updated = []
+    if not user_anime:
+        match action:
+            case "add":
+                DB.anime.insert_one(
+                    {"_id": user_id})
+                DB.anime.update_one(
+                    {"_id": user_id},
+                    {"$addToSet": {f"anime_{category}": {"$each": animes}}}
+                )
+                return animes
+            case "remove":
+                return []
+
+    else:
+        old_animes = get_user_anime_by_user_id(user_id, category)
+        match action:
+            case "add":
+                # make a list with items that are in animes but not in old_animes
+                new_animes = [
+                    item for item in animes if item not in old_animes]
+
+                DB.anime.update_one(
+                    {"_id": user_id}, {"$addToSet": {f"anime_{category}": {"$each": animes}}}, upsert=True
+                )
+                return new_animes
+            case "remove":
+                removed_animes = [
+                    item for item in animes if item in old_animes]
+
+                DB.anime.update_one(
+                    {"_id": user_id}, {"$pull": {f"anime_{category}": {"$in": animes}}}, upsert=True
+                )
+
+                return removed_animes
