@@ -195,6 +195,8 @@ def handle_seen_category(call):
         anime = get_user_anime_by_user_id(call.from_user.id, "seen")
         if len(anime):
             reply_with_text(call.message, "\n".join(anime))
+        else:
+            reply_with_text(call.message, "Список порожній")
         return
 
 
@@ -227,6 +229,8 @@ def handle_abandoned_category(call):
         anime = get_user_anime_by_user_id(call.from_user.id, "abandoned")
         if len(anime):
             reply_with_text(call.message, "\n".join(anime))
+        else:
+            reply_with_text(call.message, "Список порожній")
         return
 
 
@@ -259,6 +263,8 @@ def handle_liked_category(call):
         anime = get_user_anime_by_user_id(call.from_user.id, "liked")
         if len(anime):
             reply_with_text(call.message, "\n".join(anime))
+        else:
+            reply_with_text(call.message, "Список порожній")
         return
 
 
@@ -291,6 +297,8 @@ def handle_watching_category(call):
         anime = get_user_anime_by_user_id(call.from_user.id, "watching")
         if len(anime):
             reply_with_text(call.message, "\n".join(anime))
+        else:
+            reply_with_text(call.message, "Список порожній")
         return
 
 
