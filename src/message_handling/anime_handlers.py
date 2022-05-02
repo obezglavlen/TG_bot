@@ -35,6 +35,13 @@ def anime_search(message, user_id):
     if message.from_user.id != user_id:
         BOT.register_next_step_handler(message, anime_search, user_id)
         return
+    if message.content_type not in ["photo", "animation", "video"]:
+        if message.content_type == "text":
+            if message.text == "/cancel":
+                return
+        reply_with_text(message, "Відправте зображення")
+        BOT.register_next_step_handler(message, anime_search, user_id)
+        return
     file_id = ""
     if message.video:
         if message.video.file_size > 5000000:
@@ -305,7 +312,11 @@ def handle_watching_category(call):
 def handle_anime_title(message: types.Message, action: str, category: str, call: types.CallbackQuery = None):
     if not message.content_type == "text":
         reply_with_text(message, "Введіть назву аніме")
-        return BOT.register_next_step_handler(message, handle_anime_title, action=action, category=category, call=call)
+        BOT.register_next_step_handler(
+            message, handle_anime_title, action=action, category=category, call=call)
+        return
+    if message.text == "/cancel":
+        return
     # replace all spaces with underscores and split by newline using regex
     anime_titles = [re.sub(" +", " ", anime)
                     for anime in re.split(r"\n+", message.text)]
