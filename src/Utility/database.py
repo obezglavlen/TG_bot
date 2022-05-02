@@ -46,7 +46,8 @@ def update_user_by_id(user_id: int, user_data: dict) -> dict:
         dict: User data after update
     """
     user = DB.users.find_one({"_id": user_id})["user"]
-    DB.users.update_one({"_id": user_id}, {"$set": {"user": {**user, **user_data}}}, upsert=True)
+    DB.users.update_one({"_id": user_id}, {
+                        "$set": {"user": {**user, **user_data}}}, upsert=True)
     return get_user_by_id(user_id)
 
 
@@ -120,13 +121,92 @@ def update_user_dick(user_id, dick) -> int:
     """
     user_dick = DB.dicks.find_one({"_id": user_id})
     if not user_dick:
-        DB.dicks.insert_one({"_id": user_id, "dick": dick, "last_update": datetime.datetime.now()})
+        DB.dicks.insert_one({"_id": user_id, "dick": dick,
+                            "last_update": datetime.datetime.now()})
     elif user_dick["last_update"] > datetime.datetime.now() - datetime.timedelta(hours=1):
         raise TimeoutException(user_dick["last_update"])
     else:
         DB.dicks.update_one(
             {"_id": user_id},
-            {"$inc": {"dick": dick}, "$set": {"last_update": datetime.datetime.now()}},
+            {"$inc": {"dick": dick}, "$set": {
+                "last_update": datetime.datetime.now()}},
         )
 
     return get_user_dick(user_id)
+
+
+def update_user_anime(user_id: int, anime: str, action: str, category: str) -> list:
+    """Update user anime data
+
+    Args:
+        user_id (int): User id from message.from_user
+        anime (str): List of anime to add
+        action (str): Action to perform
+
+    Returns:
+        list: User anime after update
+    """
+    user_anime = DB.anime.find_one({"_id": user_id})
+    if not user_anime:
+        match action:
+            case "add":
+                DB.anime.insert_one(
+                    {"_id": user_id})
+                DB.anime.update_one(
+                    {"_id": user_id},
+                    {"$addToSet": {f"anime_{category}": anime}}
+                )
+            case "remove":
+                return []
+
+    else:
+        match action:
+            case "add":
+                DB.anime.update_one(
+                    {"_id": user_id}, {"$addToSet": {f"anime_{category}": anime}}, upsert=True
+                )
+            case "remove":
+                DB.anime.update_one(
+                    {"_id": user_id}, {"$pull": {f"anime_{category}": anime}}, upsert=True
+                )
+
+    return DB.anime.find({"_id": user_id})
+
+
+def get_user_anime_by_user_id(user_id: int, category: str) -> list:
+    """Get user anime data by user id
+
+    Args:
+        user_id (int): User id from message.from_user
+
+    Returns:
+        list: User anime
+    """
+    user_anime = DB.anime.find_one({"_id": user_id})
+    if not user_anime:
+        return ["У вас ще нема аніме у цьому списку"]
+    match category:
+        case "seen":
+            if "anime_seen" in user_anime:
+                animes = user_anime["anime_seen"]
+                return animes
+            else:
+                return ["У вас ще нема аніме у цьому списку"]
+        case "watching":
+            if "anime_watching" in user_anime:
+                animes = user_anime["anime_watching"]
+                return animes
+            else:
+                return ["У вас ще нема аніме у цьому списку"]
+        case "liked":
+            if "anime_liked" in user_anime:
+                animes = user_anime["anime_liked"]
+                return animes
+            else:
+                return ["У вас ще нема аніме у цьому списку"]
+        case "abandoned":
+            if "anime_abandoned" in user_anime:
+                animes = user_anime["anime_abandoned"]
+                return animes
+            else:
+                return ["У вас ще нема аніме у цьому списку"]

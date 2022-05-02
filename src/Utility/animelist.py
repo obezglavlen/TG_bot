@@ -5,7 +5,7 @@ def back_button():
     return InlineKeyboardButton(text="⬅ Назад", callback_data="cb_anime_back")
 
 
-def categories_menu_keyboard():
+def categories_menu_keyboard(prev_callback_data):
     buttons = [
         {
             "name": "Переглянуті",
@@ -30,7 +30,7 @@ def categories_menu_keyboard():
     keyboard.add(
         *[
             InlineKeyboardButton(
-                text=category["name"], callback_data=f"cb_anime_category_{category['cb']}"
+                text=category["name"], callback_data=f"cb_anime_category_{category['cb']} {prev_callback_data}"
             )
             for category in buttons
         ]
@@ -71,8 +71,8 @@ def main_menu_keyboard():
 
 
 menus = {
-    "main_menu": main_menu_keyboard(),
-    "add_menu": categories_menu_keyboard(),
-    "remove_menu": categories_menu_keyboard(),
-    "show_menu": categories_menu_keyboard(),
+    "main_menu": main_menu_keyboard,
+    "add_menu": categories_menu_keyboard,
+    "remove_menu": categories_menu_keyboard,
+    "show_menu": categories_menu_keyboard,
 }

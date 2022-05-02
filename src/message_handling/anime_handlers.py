@@ -6,6 +6,7 @@ from src.message_handling.utility import (
 import requests
 from src.config import BOT, TOKEN
 from src.Utility.animelist import menus
+from src.Utility.database import update_user_anime, get_user_anime_by_user_id
 
 
 def filter_anime(anime: list):
@@ -128,41 +129,136 @@ def anime_search(message):
     return
 
 
-@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_add")
+# Handling Select option callback
+@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_add")
 def handle_add_anime(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Додання аніме до списку...",
-        reply_markup=menus["add_menu"],
+        reply_markup=menus["add_menu"]("cb_anime_add"),
     )
 
 
-@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_remove")
+@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_remove")
 def handle_remove_anime(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Видалення аніме зі списку...",
-        reply_markup=menus["remove_menu"],
+        reply_markup=menus["remove_menu"]("cb_anime_remove"),
     )
 
 
-@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_categories")
+@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_categories")
 def handle_show_anime(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Перегляд списків ...",
-        reply_markup=menus["show_menu"],
+        reply_markup=menus["show_menu"]("cb_anime_categories"),
     )
 
 
-@BOT.callback_query_handler(func=lambda message: message.data == "cb_anime_back")
+# Handling Select category callbacks
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_seen" in call.data)
+def handle_seen_category(call):
+    if "cb_anime_add" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="add", category="seen")
+        return
+    if "cb_anime_remove" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="remove", category="seen")
+        return
+    if "cb_anime_categories" in call.data:
+        BOT.answer_callback_query(call.id, "Перегляд списку переглянутих")
+        reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "seen")))
+        return
+
+
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_abandoned" in call.data)
+def handle_abandoned_category(call):
+    if "cb_anime_add" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="add", category="abandoned")
+        return
+    if "cb_anime_remove" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="remove", category="abandoned")
+        return
+    if "cb_anime_categories" in call.data:
+        BOT.answer_callback_query(call.id, "Перегляд списку покинутих")
+        reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "abandoned")))
+        return
+
+
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_liked" in call.data)
+def handle_liked_category(call):
+    if "cb_anime_add" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="add", category="liked")
+        return
+    if "cb_anime_remove" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="remove", category="liked")
+        return
+    if "cb_anime_categories" in call.data:
+        BOT.answer_callback_query(call.id, "Перегляд списку улюблених")
+        reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "liked")))
+        return
+
+
+@BOT.callback_query_handler(func=lambda call: "cb_anime_category_watching" in call.data)
+def handle_watching_category(call):
+    if "cb_anime_add" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="add", category="watching")
+        return
+    if "cb_anime_remove" in call.data:
+        BOT.answer_callback_query(call.id, "Відправте назву аніме")
+        BOT.register_next_step_handler(
+            call.message, handle_anime_title, action="remove", category="watching")
+        return
+    if "cb_anime_categories" in call.data:
+        BOT.answer_callback_query(call.id, "Перегляд списку 'Переглядаю'")
+        reply_with_text(call.message, "\n".join(get_user_anime_by_user_id(
+            call.from_user.id, "watching")))
+        return
+
+
+def handle_anime_title(message, action: str, category: str):
+    if not message.content_type == "text":
+        reply_with_text(message, "Введіть назву аніме")
+        return
+    anime_title = message.text
+    updated = update_user_anime(
+        message.from_user.id, anime_title, action, category)
+
+    match action:
+        case "add":
+            reply_with_text(message, f"Додання аніме... {anime_title}")
+        case "remove":
+            reply_with_text(message, f"Видалення аніме... {anime_title}" if len(
+                updated) else "Аніме не знайдено")
+
+
+# Handling BACK button callback
+@BOT.callback_query_handler(func=lambda call: call.data == "cb_anime_back")
 def handle_back_to_main(call):
     BOT.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
         text="Виберіть дію:",
-        reply_markup=menus["main_menu"],
+        reply_markup=menus["main_menu"](),
     )

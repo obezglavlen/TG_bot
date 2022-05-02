@@ -10,9 +10,6 @@ load_dotenv()
 server = Flask(__name__)
 
 
-
-
-
 @server.route("/" + TOKEN, methods=["POST"])
 def getMessage():
     BOT.process_new_updates(

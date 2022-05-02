@@ -125,7 +125,7 @@ def hadle_anime_list(message):
     """Handle /anime command and send keyboard with buttons for navigate"""
     answer_message = send_msg(message, "Виберіть дію:")
 
-    markup = menus["main_menu"]
+    markup = menus["main_menu"]()
 
     BOT.edit_message_reply_markup(
         chat_id=message.chat.id, message_id=answer_message.message_id, reply_markup=markup)
