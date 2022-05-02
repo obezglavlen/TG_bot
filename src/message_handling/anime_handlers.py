@@ -270,8 +270,10 @@ def handle_anime_title(message, action: str, category: str, call=None):
     if not message.content_type == "text":
         reply_with_text(message, "Введіть назву аніме")
         return
-    # split titles by newline
-    anime_titles = message.text.split("\n")
+    # replace all spaces with underscores and split by newline using regex
+    anime_titles = [re.sub(" +", " ", anime)
+                    for anime in re.split(r"\n+", message.text)]
+
     updated = update_user_anime(
         message.from_user.id, anime_titles, action, category)
 
