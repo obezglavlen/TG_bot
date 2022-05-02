@@ -135,7 +135,7 @@ def update_user_dick(user_id, dick) -> int:
     return get_user_dick(user_id)
 
 
-def update_user_anime(user_id: int, anime: str, action: str, category: str) -> list:
+def update_user_anime(user_id: int, animes: list, action: str, category: str) -> list:
     """Update user anime data
 
     Args:
@@ -154,7 +154,7 @@ def update_user_anime(user_id: int, anime: str, action: str, category: str) -> l
                     {"_id": user_id})
                 DB.anime.update_one(
                     {"_id": user_id},
-                    {"$addToSet": {f"anime_{category}": anime}}
+                    {"$addToSet": {f"anime_{category}": {"$each": animes}}}
                 )
             case "remove":
                 return []
@@ -163,11 +163,11 @@ def update_user_anime(user_id: int, anime: str, action: str, category: str) -> l
         match action:
             case "add":
                 DB.anime.update_one(
-                    {"_id": user_id}, {"$addToSet": {f"anime_{category}": anime}}, upsert=True
+                    {"_id": user_id}, {"$addToSet": {f"anime_{category}": {"$each": animes}}}, upsert=True
                 )
             case "remove":
                 DB.anime.update_one(
-                    {"_id": user_id}, {"$pull": {f"anime_{category}": anime}}, upsert=True
+                    {"_id": user_id}, {"$pull": {f"anime_{category}": {"$in": animes}}}, upsert=True
                 )
 
     return DB.anime.find({"_id": user_id})
@@ -187,25 +187,25 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
         return ["У вас ще нема аніме у цьому списку"]
     match category:
         case "seen":
-            if "anime_seen" in user_anime:
+            if "anime_seen" in user_anime and len(user_anime["anime_seen"]):
                 animes = user_anime["anime_seen"]
                 return animes
             else:
                 return ["У вас ще нема аніме у цьому списку"]
         case "watching":
-            if "anime_watching" in user_anime:
+            if "anime_watching" in user_anime and len(user_anime["anime_watching"]):
                 animes = user_anime["anime_watching"]
                 return animes
             else:
                 return ["У вас ще нема аніме у цьому списку"]
         case "liked":
-            if "anime_liked" in user_anime:
+            if "anime_liked" in user_anime and len(user_anime["anime_liked"]):
                 animes = user_anime["anime_liked"]
                 return animes
             else:
                 return ["У вас ще нема аніме у цьому списку"]
         case "abandoned":
-            if "anime_abandoned" in user_anime:
+            if "anime_abandoned" in user_anime and len(user_anime["anime_abandoned"]):
                 animes = user_anime["anime_abandoned"]
                 return animes
             else:
