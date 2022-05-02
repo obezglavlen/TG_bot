@@ -287,8 +287,9 @@ def handle_anime_title(message, action: str, category: str, call=None):
                 text="Видалення аніме зі списку...",
                 reply_markup=call.message.reply_markup,
             )
-            reply_with_text(message, f"Видалення аніме... {anime_titles}" if len(
-                list(updated)) else "Аніме не знайдено")
+            print(updated)
+            reply_with_text(message, f"Видалено {updated} з {len(anime_titles)} аніме" if
+                            updated else "Аніме не знайдено")
 
 
 # Handling BACK button callback
