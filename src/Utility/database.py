@@ -150,26 +150,26 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
     match category:
         case "seen":
             if "anime_seen" in user_anime and len(user_anime["anime_seen"]):
-                animes = user_anime["anime_seen"]
-                return animes
+                animes: list = user_anime["anime_seen"]
+                return animes.sort()
             else:
                 return []
         case "watching":
             if "anime_watching" in user_anime and len(user_anime["anime_watching"]):
                 animes = user_anime["anime_watching"]
-                return animes
+                return animes.sort()
             else:
                 return []
         case "liked":
             if "anime_liked" in user_anime and len(user_anime["anime_liked"]):
                 animes = user_anime["anime_liked"]
-                return animes
+                return animes.sort()
             else:
                 return []
         case "abandoned":
             if "anime_abandoned" in user_anime and len(user_anime["anime_abandoned"]):
                 animes = user_anime["anime_abandoned"]
-                return animes
+                return animes.sort()
             else:
                 return []
 
