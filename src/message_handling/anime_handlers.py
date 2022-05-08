@@ -318,7 +318,7 @@ def handle_anime_title(message: types.Message, action: str, category: str, call:
     if message.text == "/cancel":
         return
     # replace all spaces with underscores and split by newline using regex
-    anime_titles = [re.sub(" +", " ", anime)
+    anime_titles = [re.sub(" +", " ", anime).strip()
                     for anime in re.split(r"\n+", message.text)]
 
     updated = update_user_anime(
