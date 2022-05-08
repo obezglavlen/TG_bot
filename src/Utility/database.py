@@ -169,9 +169,9 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
                 return animes
             else:
                 return []
-        case "abandoned":
-            if "anime_abandoned" in user_anime and len(user_anime["anime_abandoned"]):
-                animes = user_anime["anime_abandoned"]
+        case "future":
+            if "anime_future" in user_anime and len(user_anime["anime_future"]):
+                animes = user_anime["anime_future"]
                 animes.sort()
                 return animes
             else:

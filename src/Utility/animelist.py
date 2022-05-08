@@ -13,7 +13,7 @@ def categories_menu_keyboard(prev_callback_data):
         },
         {
             "name": "Покинуті",
-            "cb": "abandoned"
+            "cb": "future"
         },
         {
             "name": "Улюбені",
