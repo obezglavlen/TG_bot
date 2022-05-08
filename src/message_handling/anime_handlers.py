@@ -232,7 +232,7 @@ def handle_future_category(call):
         return
     if "cb_anime_categories" in call.data:
         BOT.clear_step_handler_by_chat_id(call.message.chat.id)
-        BOT.answer_callback_query(call.id, "Перегляд списку покинутих")
+        BOT.answer_callback_query(call.id, "Перегляд списку запланованих")
         anime = get_user_anime_by_user_id(call.from_user.id, "future")
         if len(anime):
             reply_with_text(call.message, "\n".join(anime))

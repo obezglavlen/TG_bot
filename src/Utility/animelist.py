@@ -12,7 +12,7 @@ def categories_menu_keyboard(prev_callback_data):
             "cb": "seen"
         },
         {
-            "name": "Покинуті",
+            "name": "Заплановані",
             "cb": "future"
         },
         {
