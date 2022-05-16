@@ -1,12 +1,8 @@
 from src.message_handling import *
 from src.config import BOT, TOKEN, PORT, HEROKU
-from dotenv import load_dotenv
 from flask import Flask, request
 from telebot.types import Update, BotCommand
 
-
-# Load .env file
-load_dotenv()
 server = Flask(__name__)
 
 

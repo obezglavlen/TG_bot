@@ -1,6 +1,9 @@
 import telebot
 import os
 import pymongo
+from dotenv import load_dotenv
+
+load_dotenv()
 
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 MONGO = os.environ.get("MONGO_URL")
