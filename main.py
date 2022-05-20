@@ -1,8 +1,8 @@
-from src.message_handling import *
+from src.handlers import *
 from src.config import BOT, TOKEN, PORT, HEROKU
 from flask import Flask, request
 from telebot.types import Update, BotCommand
-import src.keep_awake
+import src.Utility.keep_awake
 
 server = Flask(__name__)
 
@@ -24,8 +24,8 @@ def webhook():
 
 if __name__ == "__main__":
     # If you host bot on Heroku, you can use Flask server for webhook
-    server.run(host="0.0.0.0", port=PORT)
+    # server.run(host="0.0.0.0", port=PORT)
 
     # If you host bot on localhost, you can use bot polling
-    # BOT.remove_webhook()
-    # BOT.infinity_polling(allowed_updates=["message", "callback_query"])
+    BOT.remove_webhook()
+    BOT.infinity_polling(allowed_updates=["message", "callback_query"])

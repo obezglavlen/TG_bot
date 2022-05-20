@@ -1,6 +1,7 @@
-from telebot import types
-from src.config import BOT
 import requests
+from telebot import types
+
+from ..config import BOT
 
 
 def reply_with_sticker(message: types.Message, sticker_id: str) -> None:
@@ -75,7 +76,8 @@ def anime_from_anilist(anilist: int) -> dict:
 
     variables = {"id": anilist}
     url = "https://graphql.anilist.co"
-    response = requests.post(url, json={"query": query, "variables": variables})
+    response = requests.post(
+        url, json={"query": query, "variables": variables})
 
     if response.status_code != 200:
         raise Exception(f"Error: {response.status_code}")

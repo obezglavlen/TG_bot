@@ -1,6 +1,6 @@
-from src.message_handling.utility import reply_with_text
-from src.config import BOT
-from src.Utility.speech_recognize import recognize
+from ....config import BOT
+from ....Utility.speech_recognize import recognize
+from ....Utility.message_helpers import reply_with_text
 
 
 @BOT.message_handler(

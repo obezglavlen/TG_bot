@@ -31,40 +31,30 @@ RANDOM_PHRASES: list = [
 ]
 
 
+public_commands = [
+    telebot.types.BotCommand(command="start",
+                             description="Початок роботи з ботом та реєстрація"),
+    telebot.types.BotCommand(command="help",
+                             description="Допомога"),
+    telebot.types.BotCommand(command="random",
+                             description="Випадкове число"),
+    telebot.types.BotCommand(command="search",
+                             description="Пошук аніме по зображенню"),
+    telebot.types.BotCommand(command="dick",
+                             description="Дікадуді"),
+]
+
+private_commands = [
+    telebot.types.BotCommand(command="anime",
+                             description="Робота зі списками"),
+]
+
 BOT.delete_my_commands(scope=None, language_code=None)
 BOT.set_my_commands(
-    commands=[
-        telebot.types.BotCommand(command="start",
-                                 description="Початок роботи з ботом та реєстрація"),
-        telebot.types.BotCommand(command="help",
-                                 description="Допомога"),
-        telebot.types.BotCommand(command="random",
-                                 description="Випадкове число"),
-        telebot.types.BotCommand(command="randphrase",
-                                 description="Випадкова фраза"),
-        telebot.types.BotCommand(command="search",
-                                 description="Пошук аніме по зображенню"),
-        telebot.types.BotCommand(command="dick",
-                                 description="Дікадуді"),
-    ],
+    commands=public_commands,
     scope=telebot.types.BotCommandScopeAllGroupChats()
 )
 BOT.set_my_commands(
-    commands=[
-        telebot.types.BotCommand(command="start",
-                                         description="Початок роботи з ботом та реєстрація"),
-        telebot.types.BotCommand(command="help",
-                                 description="Допомога"),
-        telebot.types.BotCommand(command="random",
-                                 description="Випадкове число"),
-        telebot.types.BotCommand(command="randphrase",
-                                 description="Випадкова фраза"),
-        telebot.types.BotCommand(command="search",
-                                 description="Пошук аніме по зображенню"),
-        telebot.types.BotCommand(command="dick",
-                                 description="Дікадуді"),
-        telebot.types.BotCommand(command="anime",
-                                 description="Робота зі списками"),
-    ],
+    commands=public_commands + private_commands,
     scope=telebot.types.BotCommandScopeAllPrivateChats()
 )
