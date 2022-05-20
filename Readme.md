@@ -34,12 +34,11 @@ python main.py
 
 # Bot commands
 
-| Command       | Description                                           | Chat types     |
-| ------------- | ----------------------------------------------------- | -------------- |
-| start         | Start work with bot, welcome message, registration    | Group, Private |
-| help          | Show command list                                     | Group, Private |
-| random        | Random coin flip, or with 1/2 arguments random number | Group, Private |
-| randomphradse | Random phrase from config                             | Group, Private |
-| search        | Search anime moment by image/gif                      | Group, Private |
-| dick          | Simple random game                                    | Group, Private |
-| anime         | Work with anime watch list                            | Private        |
+| Command | Description                                           | Chat types     |
+| ------- | ----------------------------------------------------- | -------------- |
+| start   | Start work with bot, welcome message, registration    | Group, Private |
+| help    | Show command list                                     | Group, Private |
+| random  | Random coin flip, or with 1/2 arguments random number | Group, Private |
+| search  | Search anime moment by image/gif                      | Group, Private |
+| dick    | Simple random game                                    | Group, Private |
+| anime   | Work with anime watch list                            | Private        |
