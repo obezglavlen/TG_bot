@@ -12,4 +12,4 @@ def setInterval(func, sec):
     return t
 
 
-setInterval(lambda: requests.get(HEROKU + TOKEN), 1740)
+setInterval(lambda: requests.get(HEROKU), 1740)
