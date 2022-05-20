@@ -2,6 +2,7 @@ from src.message_handling import *
 from src.config import BOT, TOKEN, PORT, HEROKU
 from flask import Flask, request
 from telebot.types import Update, BotCommand
+import src.keep_awake
 
 server = Flask(__name__)
 
