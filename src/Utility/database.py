@@ -178,6 +178,22 @@ def get_user_anime_by_user_id(user_id: int, category: str) -> list:
                 return []
 
 
+def setup_user_anime(user_id: int):
+    """Setup user anime
+
+    Args:
+        user_id (int): User id from message.from_user
+    """
+    user_anime = DB.anime.find_one({"_id": user_id})
+    if not user_anime:
+        DB.anime.insert_one({"_id": user_id,
+                             "anime_seen": [],
+                             "anime_watching": [],
+                             "anime_liked": [],
+                             "anime_future": []
+                             })
+
+
 def update_user_anime(user_id: int, animes: list, action: str, category: str) -> list:
     """Update user anime data
 
