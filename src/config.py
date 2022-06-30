@@ -9,6 +9,7 @@ TOKEN = os.environ.get("TELEGRAM_TOKEN")
 MONGO = os.environ.get("MONGO_URL")
 HEROKU = os.environ.get("HEROKU_URL")
 PORT = int(os.environ.get("PORT", 5000))
+ENV = os.environ.get("ENV")
 
 BOT: telebot.TeleBot = telebot.TeleBot(TOKEN)
 DB = pymongo.MongoClient(MONGO).tgDB
