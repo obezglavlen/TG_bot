@@ -42,10 +42,10 @@ public_commands = [
                              description="Пошук аніме по зображенню"),
     telebot.types.BotCommand(command="dick",
                              description="Дікадуді"),
-    telebot.types.BotCommand(command="enable_tts",
-                             description="TTS enable"), 
-    telebot.types.BotCommand(command="disable_tts",
-                             description="TTS disable"),                                                  
+    telebot.types.BotCommand(command="enable_stt",
+                             description="STT enable"), 
+    telebot.types.BotCommand(command="disable_stt",
+                             description="STT disable"),                                                  
 ]
 
 private_commands = [
