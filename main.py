@@ -17,8 +17,7 @@ def getMessage():
 @server.route("/")
 def webhook():
   BOT.remove_webhook()
-  BOT.set_webhook(url=HEROKU + TOKEN,
-                  allowed_updates=["message", "callback_query"])
+  BOT.set_webhook(url=HEROKU + TOKEN)
   return "!", 200
 
 
@@ -30,4 +29,4 @@ if __name__ == "__main__":
   # If you host bot on localhost, you can use bot polling
   if ENV == "development":
     BOT.remove_webhook()
-    BOT.infinity_polling(allowed_updates=["message", "callback_query"])
+    BOT.infinity_polling(allowed_updates=["message", "callback_query", "voice"])

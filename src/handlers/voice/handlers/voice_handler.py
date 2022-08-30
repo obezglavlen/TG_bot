@@ -1,10 +1,10 @@
 from ....config import BOT
 from ....Utility.speech_recognize import recognize
 from ....Utility.message_helpers import reply_with_text
-
+from ..check_speech_enabled import check_speech_enabled
 
 @BOT.message_handler(
-    func=lambda message: True,
+    func=lambda message: message.chat.type == "private" or check_speech_enabled(message.chat.id),
     content_types=["video_note", "voice", "audio"],
 )
 def audio_recognize(message):

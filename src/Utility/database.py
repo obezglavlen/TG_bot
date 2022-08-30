@@ -34,6 +34,26 @@ def add_new_user(user: types.User) -> dict | None:
         return user
     return None
 
+def add_new_chat(chat_id: int) -> dict | None:
+  """Add chat to users collection"""
+  if not DB.users.find_one({"_id": chat_id}):
+    chat = DB.users.insert_one({
+      "_id": chat_id,
+      "user": None,
+      "speechToTextEnable": True
+    })
+    return chat
+  return None
+
+def  toggle_chat_tts(chat_id: int, enabled: bool):
+  chat = DB.users.find_one({"_id": chat_id})
+  DB.users.update_one({"_id": chat_id},
+                      {"$set": {
+                        **chat,
+                        "speechToTextEnable": enabled
+                        }
+                        
+                      })
 
 def update_user_by_id(user_id: int, user_data: dict) -> dict:
     """Update user data

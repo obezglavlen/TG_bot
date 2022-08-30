@@ -10,7 +10,6 @@ MONGO = os.environ.get("MONGO_URL")
 HEROKU = os.environ.get("HEROKU_URL")
 PORT = int(os.environ.get("PORT", 5000))
 ENV = os.environ.get("ENV")
-
 BOT: telebot.TeleBot = telebot.TeleBot(TOKEN)
 DB = pymongo.MongoClient(MONGO).tgDB
 
@@ -43,6 +42,10 @@ public_commands = [
                              description="Пошук аніме по зображенню"),
     telebot.types.BotCommand(command="dick",
                              description="Дікадуді"),
+    telebot.types.BotCommand(command="enable_tts",
+                             description="TTS enable"), 
+    telebot.types.BotCommand(command="disable_tts",
+                             description="TTS disable"),                                                  
 ]
 
 private_commands = [

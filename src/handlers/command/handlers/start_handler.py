@@ -27,4 +27,7 @@ def send_welcome(message: types.Message):
         send_msg(message, "Для полной регистрации, отправьте свой контакт",
                  reply_markup=get_markup())
 
+    elif message.chat.type in ["group", "supergroup"]:
+      db.add_new_chat(message.chat.id)
+
     reply_with_text(message, "Тринатцать")
